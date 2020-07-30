@@ -32,20 +32,25 @@ const validate = (req, res, next) => {
 
 app.post('/strips', validate, (req, res, next) => {
   const request = req.body.strip
-  db.run(
-    'insert into Strip (head, body, background, bubble_type, bubble_text, caption) values ($head, $body, $backgound, $bubbleType, $bubbleText, $caption)', {
-      $head: request.head, $body: request.body, $background: request.background, $bubbleType: request.bubbleType, $bubbleText: request.bubbleText, $caption: request.caption
-      }, 
-      function (err) {
+  db.run('insert into Strip (head, body, background, bubble_type, bubble_text, caption) values ($head, $body, $background, $bubbleType, $bubbleText, $caption)', 
+   {
+    $head: request.head, 
+    $body: request.body, 
+    $background: request.background, 
+    $bubbleType: request.bubbleType, 
+    $bubbleText: request.bubbleText, 
+    $caption: request.caption
+      }, function (err) {
     if (err) {
       return res.sendStatus(500) // internal server error
     }
-  db.get(`select * from Strip where id = ${this.lastId}`, (err, row) => {
-    if (!row) {
-      return res.sendStatus(500) // internal server error
+    db.get(`select * from Strip where id = ${this.lastId}`, (err, row) => {
+      if (!row) {
+        return res.sendStatus(500) // internal server error
     } 
     res.status(201).send({ strip: row})
   })
-  })})
+ })
+})
 
 app.listen(PORT);
